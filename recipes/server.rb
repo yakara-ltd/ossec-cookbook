@@ -28,14 +28,18 @@ agent_manager = "#{node['ossec']['user']['dir']}/bin/ossec-batch-manager.pl"
 
 ssh_hosts = Array.new
 
-search(:node, "ossec:[* TO *] NOT role:#{node['ossec']['server_role']}") do |n|
+if Chef::Config[:solo]
+  Chef::Log.warn("This recipe uses search. Chef Solo does not support search.")
+else
+  search(:node, "ossec:[* TO *] NOT role:#{node['ossec']['server_role']}") do |n|
 
-  ssh_hosts << n['ipaddress'] if n['keys']
+    ssh_hosts << n['ipaddress'] if n['keys']
 
-  execute "#{agent_manager} -a --ip #{n['ipaddress']} -n #{n['hostname']}" do
-    not_if "grep '#{n['hostname']} #{n['ipaddress']}' #{node['ossec']['user']['dir']}/etc/client.keys"
+    execute "#{agent_manager} -a --ip #{n['ipaddress']} -n #{n['hostname']}" do
+      not_if "grep '#{n['hostname']} #{n['ipaddress']}' #{node['ossec']['user']['dir']}/etc/client.keys"
+    end
+
   end
-
 end
 
 template "/usr/local/bin/dist-ossec-keys.sh" do
