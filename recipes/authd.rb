@@ -20,6 +20,14 @@
 include_recipe 'ossec::install_server'
 include_recipe 'ossec::common'
 
+bash 'add default agent' do
+  code <<-EOH
+    echo "127.0.0.1,DEFAULT_LOCAL_AGENT" > #{node['ossec']['dir']}/default_local_agent
+    cd #{node['ossec']['dir']} && #{node['ossec']['dir']}/bin/manage_agents -f default_local_agent
+    EOH
+    not_if "cat #{node['ossec']['dir']}/etc/client.keys"
+end
+
 authd = node['ossec']['authd']
 
 if node['init_package'] == 'systemd'
