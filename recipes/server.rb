@@ -2,7 +2,7 @@
 # Cookbook Name:: ossec
 # Recipe:: server
 #
-# Copyright 2010-2015, Chef Software, Inc.
+# Copyright 2010-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 # limitations under the License.
 #
 
-include_recipe 'ossec::install_server'
+include_recipe 'ossec::_install_server'
 
 ssh_hosts = []
 
 search_string = 'ossec:[* TO *]'
 search_string << " AND chef_environment:#{node['ossec']['server_env']}" if node['ossec']['server_env']
-search_string << " AND NOT role:#{node['ossec']['server_role']} AND NOT fqdn:#{node['fqdn']}"
+search_string << " AND NOT (role:#{node['ossec']['server_role']} AND fqdn:#{node['fqdn']})"
 
 search(:node, search_string) do |n|
   ssh_hosts << n['ipaddress'] if n['keys']
@@ -53,18 +53,18 @@ ossec_key = if node['ossec']['data_bag']['encrypted']
 directory "#{node['ossec']['dir']}/.ssh" do
   owner 'root'
   group 'ossec'
-  mode 0750
+  mode '0750'
 end
 
 template "#{node['ossec']['dir']}/.ssh/id_rsa" do
   source 'ssh_key.erb'
   owner 'root'
   group 'ossec'
-  mode 0600
+  mode '0600'
   variables(key: ossec_key['privkey'])
 end
 
-include_recipe 'ossec::common'
+include_recipe 'ossec::_common'
 
 cron 'distribute-ossec-keys' do
   minute '0'

@@ -2,7 +2,7 @@
 # Cookbook Name:: ossec
 # Attributes:: default
 #
-# Copyright 2010-2015, Chef Software, Inc.
+# Copyright 2010-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ default['ossec']['conf']['all']['rootcheck']['rootkit_trojans'] = "#{node['ossec
 
   default['ossec']['conf'][type]['alerts']['email_alert_level'] = 7
   default['ossec']['conf'][type]['alerts']['log_alert_level'] = 1
-  default['ossec']['conf'][type]['alerts']['use_geoip'] = false
+  default['ossec']['conf'][type]['alerts']['use_geoip'] = false unless platform_family?('debian')
 end
 
 default['ossec']['conf']['server']['remote']['connection'] = 'secure'

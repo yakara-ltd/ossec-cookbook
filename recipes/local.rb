@@ -2,7 +2,7 @@
 # Cookbook Name:: ossec
 # Recipe:: default
 #
-# Copyright 2010-2015, Chef Software, Inc.
+# Copyright 2010-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,5 +17,5 @@
 # limitations under the License.
 #
 
-include_recipe 'ossec::install_server'
-include_recipe 'ossec::common'
+include_recipe 'ossec::_install_server'
+include_recipe 'ossec::_common'
